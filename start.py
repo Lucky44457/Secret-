@@ -1,3 +1,24 @@
+# ----------------- Koyeb Health Check Patch -----------------
+import threading
+import http.server
+import socketserver
+
+PORT = 8080
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+def run_server():
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        httpd.serve_forever()
+
+# Start HTTP server in background
+threading.Thread(target=run_server, daemon=True).start()
+# -------------------------------------------------------------
+
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters
 from telethon import TelegramClient
